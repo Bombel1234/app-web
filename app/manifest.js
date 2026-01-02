@@ -5,7 +5,7 @@ export default function manifest() {
     description: 'Описание вашего PWA',
     start_url: '/',
     display: 'standalone',
-    background_color: '#fff',
+    background_color: '#16d410ff',
     theme_color: '#fff',
     icons: [
       {
