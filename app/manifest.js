@@ -14,7 +14,7 @@ export default function manifest() {
         type: 'image/x-icon',
       },
       {
-        src: '/icon-192.png',
+        src: 'assets/images/1765677897984.jpg',
         sizes: '192x192',
         type: 'image/png',
       },
