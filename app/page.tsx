@@ -74,34 +74,37 @@ export default function Login() {
                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                      transition-all duration-200 placeholder-gray-400"
           />
-          <div className="flex flex-col gap-2 px-2">
-            <div className="relative">
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                name="email"
-                onChange={(e) => setPassword(e.target.value)}
-                className="px-4 py-2 text-white relative text-[24px] border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none pr-10"
-                placeholder="Введите пароль"
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                tabIndex={-1}
-                className="absolute text-white w-6 h-6 right-14 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
-              >
-                {showPassword ? (
-                  <EyeOff size={20} />
-                ) : (
-                  <Eye size={20} />    
-                )}
-              </button>
+          <div className="flex w-full justify-center">
+            <div className="w-sm ">
+              <div className="relative w-full text-center" >
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  name="email"
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="px-4 w-full relative py-2 text-white text-[24px] border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none pr-10"
+                  placeholder="Wpisz haslo"
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  tabIndex={-1}
+                  className="absolute mr-4 text-white w-6 h-6 right-0 top-1/2 -translate-y-1/2 text-gray-500 hover: focus:outline-none"
+                  aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+                >
+                  {showPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
+
           <button
-            
+
             type="submit"
             className="px-10 py-2 mt-20 text-[22px]  bg-red-500 text-white rounded-lg hover:bg-red-700 transition"
           >
