@@ -4,10 +4,11 @@ import { useRouter } from "next/navigation";
 import { Plus, ChevronLeft, Save } from "lucide-react";
 import Image from "next/image";
 import { auth, db } from "@/app/lib/firebase"
-import { doc, getDocs, collection, query, where, getCountFromServer } from "firebase/firestore";
+import { doc, getDocs, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { FormEvent, useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 // import {RecipeForm} from "@/app/components/addRecipeForm"
+import { X } from "lucide-react"
 
 
 
@@ -17,7 +18,17 @@ export default function CategoriesPage() {
   const [images, setImages] = useState<any[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null)
-  // const [loading, setLoading] = useState(true);
+
+  const [title, setTitle] = useState("");
+  const [value, setValue] = useState("")
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUserId(user ? user.uid : null);
+
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Переход на страницу добавления с параметром категории
   const handleAddClick = (cat: string) => {
@@ -40,8 +51,26 @@ export default function CategoriesPage() {
   }
   fetchAllImages()
 
-  const clickAddRecipe = () => {
-    setCategory(null)
+  const clickAddRecipe = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      if (!userId) return;
+      const recipesRef = collection(db, "users", userId, "recipes");
+      await addDoc(recipesRef, {
+        title: title,
+        supportText: "supportText",
+        category: category,
+        text: value,
+        createdAt: serverTimestamp(),
+      });
+
+      router.push("/home");
+      setCategory(null)
+    } catch (error) {
+      console.error("Ошибка при добавлении:", error);
+    } finally {
+    }
+
   }
 
 
@@ -91,8 +120,10 @@ export default function CategoriesPage() {
 
                 {/* Кнопка записи блюда */}
                 <button
+
                   onClick={() => handleAddClick(cat.category)}
                   className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-xl font-bold shadow-lg shadow-orange-200 transition-all active:scale-95"
+                  type="submit"
                 >
                   <Plus size={20} />
                   Zapisz
@@ -102,40 +133,45 @@ export default function CategoriesPage() {
           ))}
         </div>
         {category && (
-          <div className="fixed inset-0 z-[100] h-screen flex items-center justify-center p-4 bg-black/40 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="bg-white w-full h-screen">
-              <div className="flex justify-center mx-auto px-4 text-black">
-                <form className="space-y-6 w-[380px]" onSubmit={clickAddRecipe}>
-
-                  <div>
-                    <div>
-                      <h1 className="text-[28px] font-bold">Dodaj przepis do kategorii:
-                      </h1>
-                      <p>{category}</p>
-                    </div>
-
-                    <label className="block text-[16px] pt-6 font-black uppercase tracking-widest mb-2 ml-1">
-                      Nazwa dania
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      name='title'
-                      // onChange={(e) => setTitle(e.target.value)}
-                      className="w-full p-4 text-[22px] bg-gray-300 border-2 border-transparent focus:border-blue-500 focus:bg-white rounded-2xl outline-none transition-all font-bold text-gray-800"
-                    />
+          <div className="fixed inset-0 w-screen z-[10] h-screen flex items-center justify-center p-4 bg-white animate-in fade-in duration-300">
+            <div className="block w-full">
+              <div className="">
+                <div className="flex mb-5">
+                  <div className="">
+                    <h1 className="text-[24px] font-bold">Dodaj przepis do kategorii:
+                    </h1>
+                    <p className="text-[22px] font-bold italic text-blue-900">{category}</p>
                   </div>
-                  <div>
-                    <label className="block text-[20px] font-black  tracking-widest mb-2 ml-1">
-                      Tresc Przepisu
-                    </label>
-                    <textarea
-                      required
-                      name='valueRecipe'
-                      // onChange={(e) => setvalueRecipe(e.target.value)}
-                      className="w-full h-[300px] p-4 text-[22px] bg-gray-300 border-2 border-transparent focus:border-blue-500 focus:bg-white rounded-2xl outline-none transition-all resize-none text-gray-600"
-                    />
-                  </div>
+                  <button
+                    // onClick={() => setEditingRecipe(null)}
+                    className="absolute right-6 top-3 p-2 hover:bg-gray-100 rounded-full text-gray-400 transition-colors"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex w-full justify-center  text-black">
+                <form className="space-y-6 w-full" onSubmit={clickAddRecipe}>
+                  <label className="text-[22px]  font-bold uppercase tracking-widest ml-1">
+                    Nazwa dania
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    name='title'
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-full p-4 mb-2 text-[22px] bg-gray-300 border-2 border-transparent focus:border-blue-500 focus:bg-white rounded-2xl outline-none transition-all font-bold text-gray-800" />
+
+                  <label className="text-[22px] font-bold uppercase tracking-widest mb-2 ml-1">
+                    Tresc Przepisu
+                  </label>
+                  <textarea
+                    required
+                    name='valueRecipe'
+                    onChange={(e) => setValue(e.target.value)}
+                    className="w-full h-[300px] p-4 text-[22px] bg-gray-200 border-2 border-transparent focus:border-blue-500 focus:bg-white rounded-2xl outline-none transition-all resize-none text-gray-600"
+                  />
+
 
 
                   <div className="flex gap-3 pt-2">
@@ -151,6 +187,7 @@ export default function CategoriesPage() {
               </div>
             </div>
           </div>
+
         )}
       </main>
     </div>
