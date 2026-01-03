@@ -40,7 +40,7 @@ export default function CategoriesPage() {
   }
   fetchAllImages()
 
-  const clickAddRecipe = ()=>{
+  const clickAddRecipe = () => {
     setCategory(null)
   }
 
@@ -108,6 +108,12 @@ export default function CategoriesPage() {
                 <form className="space-y-6 w-[380px]" onSubmit={clickAddRecipe}>
 
                   <div>
+                    <div>
+                      <h1 className="text-[28px] font-bold">Dodaj przepis do kategorii:
+                      </h1>
+                      <p>{category}</p>
+                    </div>
+
                     <label className="block text-[16px] pt-6 font-black uppercase tracking-widest mb-2 ml-1">
                       Nazwa dania
                     </label>
