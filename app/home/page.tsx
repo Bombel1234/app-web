@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 import { collection, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore";
-
+import { MyRecipeHome } from "@/app/components/myRecipe"
 
 
 
@@ -47,6 +47,12 @@ export default function Home() {
 
   const [deletingRecipe, setdeletingRecipe] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  ///////////////////////////////components/////////
+
+  const [selectedDish, setSelectedDish] = useState(null);
+  // const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<{id1:string, id2:string} | null>(null)
 
   // 1. Получаем ID пользователя
   useEffect(() => {
@@ -95,7 +101,7 @@ export default function Home() {
   }
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const formData = new FormData(e.currentTarget);
     const titleValue = formData.get("title");
     const supportTextValue = formData.get("supportText");
@@ -145,11 +151,16 @@ export default function Home() {
   // 6 Add Recipe
   const addRecipe = () => {
     window.location.href = '/categories'
-    
+
   }
   // 7 Text Recipe
-  const clickRecipe = (id:string, cat:string)=> {
-    router.push(`/recipe?id=${id}`)
+  const clickRecipe = (id: string, cat: string) => {
+    // router.push(`/recipe?id=${id}`)
+    setIsDialogOpen({id1:id, id2:cat})
+
+  }
+  const dialog = () => {
+      setIsDialogOpen(null)
   }
 
   return (
@@ -259,8 +270,6 @@ export default function Home() {
                     </button>
                   </div>
                 </div>
-
-
               </div>
 
               <div className="mt-4 pt-4 border-t border-gray-500 flex items-center text-gray-700 text-xs">
@@ -353,42 +362,44 @@ export default function Home() {
             <div className="mx-auto w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-500 mb-6">
               <Trash2 size={40} strokeWidth={2.5} />
             </div>
-            <h2 className="text-2xl font-black text-gray-900 mb-2">Удалить рецепт?</h2>
+            <h2 className="text-2xl font-black text-gray-900 mb-2">Wykasowac przepis?</h2>
             <p className="text-gray-500 text-sm leading-relaxed mb-8">
               {/* Вы действительно хотите удалить <span className="font-bold text-gray-800">«{deletingRecipe.title}»</span>? */}
-              Это действие нельзя будет отменить.
+
+              Ta czynnosc nie mozna odwolac
             </p>
             <div className="flex flex-col gap-3">
               <button
-                // onClick={deleteRecipe}
                 onClick={() => {
-                  // Здесь ваша логика удаления (напр. запрос к Firebase или фильтрация стейта)
-                  // setRecipes(recipes.filter(r => r.id !== deletingRecipe));
                   deleteRecipe(deletingRecipe)
-
-                  //setdeletingRecipe(false); // Закрыть окно
                 }}
                 className="w-full py-4 bg-red-500 text-white font-black rounded-2xl shadow-lg shadow-red-200 hover:bg-red-600 active:scale-95 transition-all"
               >
-                Да, удалить
+                Tak, wykasowac
               </button>
 
               <button
                 onClick={() => setdeletingRecipe(false)}
                 className="w-full py-4 bg-gray-300 text-gray-500 font-bold rounded-2xl hover:bg-gray-100 transition-all"
               >
-                Отмена
+                Odrzuc
               </button>
             </div>
 
           </div>
         </div>
       )}
+      {isDialogOpen && (
+        <MyRecipeHome
+          onShowRecipe={dialog}
+        />
+      )}
+
 
 
       {/* --- FOOTER (Только для этой страницы) --- */}
       <footer className="bg-blue-400 border-t border-gray-100 py-4 text-center">
-        <p className="text-gray-700  text-sm">© 2025 Специально для страницы Home.</p>
+        <p className="text-gray-700  text-sm">© 2025 Glowna strona. Firebase</p>
       </footer>
     </div >
 
