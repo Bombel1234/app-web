@@ -36,7 +36,9 @@ export default function CategoriesPage() {
     setCategory(cat)
   };
 
-
+  const moveBackHtml = ()=>{
+    setCategory(null)
+  }
 
   async function fetchAllImages() {
     const querySnapshot = await getDocs(collection(db, "images"));
@@ -143,7 +145,7 @@ export default function CategoriesPage() {
                     <p className="text-[22px] font-bold italic text-blue-900">{category}</p>
                   </div>
                   <button
-                    // onClick={() => setEditingRecipe(null)}
+                    onClick={moveBackHtml}
                     className="absolute right-6 top-3 p-2 hover:bg-gray-100 rounded-full text-gray-400 transition-colors"
                   >
                     <X size={24} />
