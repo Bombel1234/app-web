@@ -138,7 +138,7 @@ export default function CategoriesPage() {
               <div className="">
                 <div className="flex mb-5">
                   <div className="">
-                    <h1 className="text-[24px] font-bold">Dodaj przepis do kategorii:
+                    <h1 className="text-[24px] text-black font-bold">Dodaj przepis do kategorii:
                     </h1>
                     <p className="text-[22px] font-bold italic text-blue-900">{category}</p>
                   </div>
