@@ -33,7 +33,7 @@ export function MyRecipeHome({dish, handleUpdate}:RecipeData) {
                         <button onClick={() => window.location.href = '/home'} className="p-2 hover:bg-gray-100 rounded-full">
                             <ArrowLeft size={24} />
                         </button>
-                        <h1 className="font-bold text-xl truncate max-w-[200px] sm:max-w-md">
+                        <h1 className="font-bold text-black-900 text-xl truncate max-w-[200px] sm:max-w-md">
                             {dish.title}
                         </h1>
                     </div>
