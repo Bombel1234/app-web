@@ -15,7 +15,7 @@ import {
   Settings, User, LogOut, UtensilsCrossed, Plus
 } from "lucide-react";
 
-import { collection, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, onSnapshot, getDoc, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { MyRecipeHome } from "@/app/components/myRecipe"
 
 
@@ -36,7 +36,7 @@ const CATEGORIES = [
 
 
 export default function Home() {
-  const router = useRouter();
+
   const [recipes, setRecipes] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("Wszystkie");
   const [userId, setUserId] = useState<string | null>(null);
@@ -47,13 +47,14 @@ export default function Home() {
 
   const [deletingRecipe, setdeletingRecipe] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [idRecipe, setIdRecipe] = useState('')
 
   ///////////////////////////////components/////////
 
-  const [selectedDish, setSelectedDish] = useState(null);
-  // const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState<{id1:string, id2:string} | null>(null)
-
+  const [recipe, setRecipe] = useState<{ title: string, text: string } | null>(null);
+  const [title, setTitle] = useState(false);
+  // const [isDialogOpen, setIsDialogOpen] = useState<{ id1: string, id2: string } | null>(null)
+  const router = useRouter();
   // 1. Получаем ID пользователя
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -154,14 +155,44 @@ export default function Home() {
 
   }
   // 7 Text Recipe
-  const clickRecipe = (id: string, cat: string) => {
-    // router.push(`/recipe?id=${id}`)
-    setIsDialogOpen({id1:id, id2:cat})
+
+  const textRecipe = null;
+  const clickRecipe = async (id: string, cat: string) => {
+    setIdRecipe(id)
+    try {
+      if (!userId) return;
+      const docRef = doc(db, "users", userId, "recipes", id);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        console.log('test', data)
+        setRecipe({ title: data.title, text: data.text })
+
+      }
+    } catch {
+
+    } finally {
+
+    }
+  }
+  const updateRecipe = async (text1: any) => {
+    try {
+      if (!userId) return;
+      const docRef = doc(db, "users", userId, "recipes", idRecipe);
+      console.log(docRef)
+      await updateDoc(docRef, {
+        text: text1
+      });
+      setRecipe(null)
+    
+    } catch (e) {
+      alert("Ошибка при сохранении");
+    } finally {
+      console.log('finally')
+    }
 
   }
-  const dialog = () => {
-      setIsDialogOpen(null)
-  }
+
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-white">
@@ -389,9 +420,10 @@ export default function Home() {
           </div>
         </div>
       )}
-      {isDialogOpen && (
+      {recipe && (
         <MyRecipeHome
-          onShowRecipe={dialog}
+          dish={recipe}
+          handleUpdate={updateRecipe}
         />
       )}
 
