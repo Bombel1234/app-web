@@ -20,7 +20,7 @@ export default function manifest() {
         type: 'image/png',
       },
       {
-        src: 'assets/images/food-180.png',
+        src: 'assets/images/food-bg-180.png',
         sizes: '192x192',
         type: 'image/png',
       },
