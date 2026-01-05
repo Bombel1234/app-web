@@ -21,7 +21,7 @@ export default function manifest() {
       },
       {
         src: 'assets/images/food-bg-180.png',
-        sizes: '192x192',
+        sizes: '180x180',
         type: 'image/png',
       },
     ],
