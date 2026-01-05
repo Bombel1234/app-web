@@ -4,7 +4,7 @@ export default function manifest() {
     name: 'App Web1',
     short_name: 'App Web1',
     description: 'Описание вашего PWA',
-    start_url: '/app-web/',
+    start_url: '/',
     display: 'standalone',
     background_color: '#16d410ff',
     theme_color: '#fff',
