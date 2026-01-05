@@ -11,7 +11,7 @@ export default function manifest() {
     icons: [
       {
         src: '/assets/images/food-512.png',
-        sizes: 'any',
+        sizes: '512x512',
         type: 'image/x-icon',
       },
       {
