@@ -10,12 +10,17 @@ export default function manifest() {
     theme_color: '#fff',
     icons: [
       {
-        src: '/assets/images/food.png',
+        src: '/assets/images/food-512.png',
         sizes: 'any',
         type: 'image/x-icon',
       },
       {
-        src: 'assets/images/DSC_0712.JPG',
+        src: 'assets/images/food-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: 'assets/images/food-180.png',
         sizes: '192x192',
         type: 'image/png',
       },
