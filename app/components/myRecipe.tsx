@@ -66,7 +66,7 @@ export function MyRecipeHome({dish, handleUpdate}:RecipeData) {
                                     onClick={() => setIsEditing(false)}
                                     className="flex-1 py-3 border bg-gray-300 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-50"
                                 >
-                                    <X size={18} /> Отмена
+                                    <X size={18} /> Powrot
                                 </button>
                                 <button
                                     onClick={() => handleUpdate(text)}

@@ -3,11 +3,11 @@ export default function manifest() {
     id:'/',
     name: 'App Web1',
     short_name: 'App Web1',
-    description: 'Описание вашего PWA',
+    description: 'Aplikacja dla zapisywania przepisow',
     start_url: '/',
     display: 'standalone',
     background_color: '#16d410ff',
-    theme_color: '#fff',
+    theme_color: '#f31e1eff',
     icons: [
       {
         src: '/assets/images/food-512.png',
