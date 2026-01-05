@@ -60,7 +60,7 @@ export default function Login() {
 
   return (
     <div className=" bg-black min-h-screen ">
-      <div className="w-[380px] bg-black-800 m-auto py-4 px-2">
+      <div className="w-[95vw] bg-black-800 m-auto py-4 px-2">
         <h1 className="text-[38px] text-center text-white font-bold mb-10">Witaj!!!</h1>
         <button
           onClick={handleLogin}
