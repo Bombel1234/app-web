@@ -25,5 +25,21 @@ export default function manifest() {
         type: 'image/png',
       },
     ],
+    screenshots: [
+      
+    {
+      "src": "/assets/images/Screenshot_1080x2408.png",
+      "type": "image/png",
+      "sizes": "1080x2408",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/assets/images/Screenshot_1080x2408-1.png",
+      "type": "image/png",
+      "sizes": "1080x2408",
+      "form_factor": "wide"
+    },
+    
+  ]
   }
 }
