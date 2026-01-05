@@ -37,7 +37,7 @@ export default function manifest() {
       "src": "/assets/images/Screenshot_1080x2408-1.png",
       "type": "image/png",
       "sizes": "1080x2408",
-      "form_factor": "wide"
+      "form_factor": "narrow"
     },
     
   ]
