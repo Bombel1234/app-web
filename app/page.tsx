@@ -59,25 +59,26 @@ export default function Login() {
   }
 
   return (
-    <div className="flex bg-black items-center justify-center min-h-screen ">
-      <div className="w-screen bg-black-800 m-auto px-2">
-        <h1 className="text-[38px] text-center text-white font-bold mb-12">Witaj!!!</h1>
+    <div className=" bg-black min-h-screen ">
+      <div className="w-[380px] bg-black-800 m-auto py-4 px-2">
+        <h1 className="text-[38px] text-center text-white font-bold mb-10">Witaj!!!</h1>
         <button
           onClick={handleLogin}
-          className=" flex justify-center text-[18px] font-bold gap-4 items-center w-full px-6 py-4 mb-6  bg-blue-100 rounded-lg hover:bg-blue-700 transition"
+          className=" flex justify-center text-[18px] font-bold gap-4 items-center w-full px-6 py-2 mb-4  bg-blue-100 rounded-lg hover:bg-blue-700 transition"
         >
           <Image
             src='/assets/icons/icons8-google-36.png'
             width={36}
             height={36}
             alt=""
+          
           />
           Wejscie przez Google
         </button>
-        <h2 className="text-2xl text-white font-bold mt-10 mb-12">Rejestracja przez email</h2>
+        <h2 className="text-2xl text-white text-center font-bold mt-10 mb-12">Rejestracja przez email</h2>
         <form onSubmit={clickEmail}>
           <input type="email" name="email" placeholder="Enter email"
-            className="px-4 mb-6 text-white text-[24px] py-2 border border-gray-300 rounded-lg shadow-sm 
+            className="px-4 mb-6 w-full text-white text-[24px] py-2 border border-gray-300 rounded-lg shadow-sm 
                      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                      transition-all duration-200 placeholder-gray-400"
           />
@@ -113,10 +114,11 @@ export default function Login() {
           <button
 
             type="submit"
-            className="px-10 py-2 mt-20 text-[22px]  bg-red-500 text-white rounded-lg hover:bg-red-700 transition"
+            className="px-10 py-2 mt-10 mb-13 w-full text-[22px]  bg-red-500 text-white rounded-lg hover:bg-red-700 transition"
           >
             Registration
           </button>
+          <p className="text-white text-[18px] font-bold">Don't have an account?<span className="text-blue-900 ml-2">Sing Up</span></p>
         </form>
       </div>
 
