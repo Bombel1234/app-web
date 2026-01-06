@@ -26,7 +26,7 @@ export default function FormLogIn({action}:FormProps){
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
-                name="email"
+                name="password"
                 onChange={(e) => setPassword(e.target.value)}
                 className="px-4 w-full relative py-2 text-white text-[18px] border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none pr-10"
                 placeholder="Wpisz haslo"

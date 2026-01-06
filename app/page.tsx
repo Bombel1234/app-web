@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { auth, provider } from "@/app/lib/firebase"
-import { signInWithPopup, onAuthStateChanged,signInWithEmailAndPassword , createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithPopup, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import FormRegistration from "./components/registration/formRegistration";
 import FormLogIn from "./components/registration/formLogin";
@@ -39,7 +39,7 @@ export default function Login() {
 
       // После успешного входа сработает onAuthStateChanged выше 
       // и перенаправит пользователя. Но можно продублировать и здесь:
-      //router.push("/home");
+      router.push("/home");
       alert('create account')
     } catch (error) {
       console.error("Ошибка при входе:", error);
@@ -47,7 +47,7 @@ export default function Login() {
     }
   };
 
-  
+
   // 4 registration email
 
   const clickLogo = () => {
@@ -60,11 +60,11 @@ export default function Login() {
 
   // registration email and password
   async function handleRegister(prevState: any, formData: FormData) {
-    const email = formData.get('email')  as string;
-    const password = formData.get('password')  as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
     const confirmPassword = formData.get('confirmPassword');
 
-    if (!email){
+    if (!email) {
       setIsModalOpen(true)
       setTextModal('Wpisz email')
       return;
@@ -76,16 +76,16 @@ export default function Login() {
       return;
     }
 
-    if ((password as string).length < 6) {
+    if ((password).length < 6) {
       setTextModal("Hasło musi mieć minimum 8 znaków.");
       return;
     }
 
     // 2. Symulacja zapisu do bazy danych
     console.log("Rejestracja użytkownika:", email);
-  
+
     try {
-      
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       console.log("Успешно зарегистрирован:", userCredential.user);
       // Здесь можно перенаправить пользователя: router.push('/dashboard')
@@ -95,25 +95,29 @@ export default function Login() {
         setError('Этот email уже занят.');
       } else if (err.code === 'auth/weak-password') {
         setError('Пароль слишком слабый (минимум 6 символов).');
-      } else {
-        setError('Произошла ошибка при регистрации.');
-      }
+      } else if (err.code === 'auth/password-does-not-meet-requirements') {
+        setError('politika password')
+      } else
+        // setError('Произошла ошибка при регистрации.');
+        setError('inne');
     }
-    // 3. Przekierowanie po sukcesie
-    // redirect('/dashboard');
   }
+  // 3. Przekierowanie po sukcesie
+  // redirect('/dashboard');
+
+
   /// logowanie
 
   async function handleLogo(prevState: any, formData: FormData) {
-    const email = formData.get('email')  as string;
-    const password = formData.get('password')  as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    console.log(email, password)
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // Если вход успешен, перенаправляем на главную или в профиль
-      //router.push('/home');
-      console.log('success')
+      router.push('/home')
+      
     } catch (err: any) {
-      // Обработка ошибок входа
+
       switch (err.code) {
         case 'auth/invalid-credential':
           alert('Неверный email или пароль.');
@@ -128,12 +132,13 @@ export default function Login() {
           alert(err)
       }
     } finally {
-      // setLoading(false);
+      console.log()
     }
 
   }
 
   return (
+    
     <div className=" bg-black min-h-screen ">
       <div className="w-[98vw] bg-black-800 m-auto py-4 px-2">
         <h1 className="text-[38px] text-center text-white font-bold mb-10">Witaj!!!</h1>
@@ -150,7 +155,7 @@ export default function Login() {
           />
           Wejscie przez Google
         </button>
-
+        <div className="text-white">{error}</div>
         {isFormLogo ? (
           <div className="">
             <h2 className="text-2xl text-white text-center font-bold mt-10 mb-12">Rejestracja przez email</h2>
@@ -180,7 +185,6 @@ export default function Login() {
             </p>
           </div>
         )
-
         }
 
         <Modal
