@@ -2,13 +2,18 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { auth, provider } from "@/app/lib/firebase"
-import { signInWithPopup, onAuthStateChanged, User } from "firebase/auth";
-import { FormEvent, useEffect, useState } from "react";
-import { Eye, EyeOff } from 'lucide-react'
-
-
+import { signInWithPopup, onAuthStateChanged,signInWithEmailAndPassword , createUserWithEmailAndPassword } from "firebase/auth";
+import { useEffect, useState } from "react";
+import FormRegistration from "./components/registration/formRegistration";
+import FormLogIn from "./components/registration/formLogin";
+import Modal from "./components/registration/modal";
 
 export default function Login() {
+  const [isFormLogo, setIsFormLogo] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [textModal, setTextModal] = useState("")
+  const [error, setError] = useState('');
+
   const router = useRouter();
 
   // 1. АВТОМАТИЧЕСКИЙ ПЕРЕХОД
@@ -17,8 +22,8 @@ export default function Login() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("Пользователь найден, перенаправляем...");
-        router.push("/home"); // Путь к вашей главной странице
+        // setIsFormLogo(false)
+        // router.push("/home"); // Путь к вашей главной странице
       }
     });
 
@@ -34,28 +39,98 @@ export default function Login() {
 
       // После успешного входа сработает onAuthStateChanged выше 
       // и перенаправит пользователя. Но можно продублировать и здесь:
-      router.push("/home");
+      //router.push("/home");
+      alert('create account')
     } catch (error) {
       console.error("Ошибка при входе:", error);
       alert("Не удалось войти через Google");
     }
   };
 
-  // 3 input password
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState('');
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
+  
   // 4 registration email
-  const clickEmail = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const password = formData.get("password");
-    const email = formData.get("email");
 
-    // console.log(email)
+  const clickLogo = () => {
+    setIsFormLogo(true)
+
+  }
+  const clickRegistration = () => {
+    setIsFormLogo(false)
+  }
+
+  // registration email and password
+  async function handleRegister(prevState: any, formData: FormData) {
+    const email = formData.get('email')  as string;
+    const password = formData.get('password')  as string;
+    const confirmPassword = formData.get('confirmPassword');
+
+    if (!email){
+      setIsModalOpen(true)
+      setTextModal('Wpisz email')
+      return;
+    }
+    // 1. Podstawowa walidacja po stronie serwera
+    if (password !== confirmPassword) {
+      setIsModalOpen(true)
+      setTextModal('Hasla roznie')
+      return;
+    }
+
+    if ((password as string).length < 6) {
+      setTextModal("Hasło musi mieć minimum 8 znaków.");
+      return;
+    }
+
+    // 2. Symulacja zapisu do bazy danych
+    console.log("Rejestracja użytkownika:", email);
+  
+    try {
+      
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("Успешно зарегистрирован:", userCredential.user);
+      // Здесь можно перенаправить пользователя: router.push('/dashboard')
+    } catch (err: any) {
+      // Обработка типичных ошибок Firebase
+      if (err.code === 'auth/email-already-in-use') {
+        setError('Этот email уже занят.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('Пароль слишком слабый (минимум 6 символов).');
+      } else {
+        setError('Произошла ошибка при регистрации.');
+      }
+    }
+    // 3. Przekierowanie po sukcesie
+    // redirect('/dashboard');
+  }
+  /// logowanie
+
+  async function handleLogo(prevState: any, formData: FormData) {
+    const email = formData.get('email')  as string;
+    const password = formData.get('password')  as string;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // Если вход успешен, перенаправляем на главную или в профиль
+      //router.push('/home');
+      console.log('success')
+    } catch (err: any) {
+      // Обработка ошибок входа
+      switch (err.code) {
+        case 'auth/invalid-credential':
+          alert('Неверный email или пароль.');
+          break;
+        case 'auth/user-disabled':
+          alert('Аккаунт заблокирован.');
+          break;
+        case 'auth/too-many-requests':
+          alert('Слишком много попыток. Попробуйте позже.');
+          break;
+        default:
+          alert(err)
+      }
+    } finally {
+      // setLoading(false);
+    }
+
   }
 
   return (
@@ -64,65 +139,57 @@ export default function Login() {
         <h1 className="text-[38px] text-center text-white font-bold mb-10">Witaj!!!</h1>
         <button
           onClick={handleLogin}
-          className=" flex justify-center text-[18px] font-bold gap-4 items-center w-full px-6 py-2 mb-4  bg-blue-100 rounded-lg hover:bg-blue-700 transition"
+          className=" flex justify-center text-[18px] font-bold gap-4 items-center w-full px-6 py-2 mb-4  bg-blue-100 rounded-lg hover:bg-blue-300 transition"
         >
           <Image
             src='/assets/icons/icons8-google-36.png'
             width={36}
             height={36}
             alt=""
-          
+            priority
           />
           Wejscie przez Google
         </button>
-        <h2 className="text-2xl text-white text-center font-bold mt-10 mb-12">Rejestracja przez email</h2>
-        <form onSubmit={clickEmail}>
-          <input type="email" name="email" placeholder="Enter email"
-            className="px-4 mb-6 w-full text-white text-[24px] py-2 border border-gray-300 rounded-lg shadow-sm 
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                     transition-all duration-200 placeholder-gray-400"
-          />
-          <div className="flex w-full justify-center">
-            <div className="w-sm ">
-              <div className="relative w-full text-center" >
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  name="email"
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="px-4 w-full relative py-2 text-white text-[24px] border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none pr-10"
-                  placeholder="Wpisz haslo"
-                />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  tabIndex={-1}
-                  className="absolute mr-4 text-white w-6 h-6 right-0 top-1/2 -translate-y-1/2 text-gray-500 hover: focus:outline-none"
-                  aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
-                >
-                  {showPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
-                </button>
-              </div>
-            </div>
+
+        {isFormLogo ? (
+          <div className="">
+            <h2 className="text-2xl text-white text-center font-bold mt-10 mb-12">Rejestracja przez email</h2>
+
+            <FormRegistration
+              action={handleRegister}
+            />
+            <p className="text-white text-[18px] font-bold">Don't have an account?
+              <span
+                onClick={clickRegistration}
+                className="text-blue-900 ml-2">Sing In
+              </span>
+            </p>
           </div>
+        ) : (
+          <div className="">
+            <h2 className="text-2xl text-white text-center font-bold mt-10 mb-12">Logowanie przez email</h2>
 
-          <button
+            <FormLogIn 
+              action={handleLogo}
+            />
+            <p className="text-white text-[18px] font-bold">Don't have an account?
+              <span
+                onClick={clickLogo}
+                className="text-blue-900 ml-2">Sing Up
+              </span>
+            </p>
+          </div>
+        )
 
-            type="submit"
-            className="px-10 py-2 mt-10 mb-13 w-full text-[22px]  bg-red-500 text-white rounded-lg hover:bg-red-700 transition"
-          >
-            Registration
-          </button>
-          <p className="text-white text-[18px] font-bold">Don't have an account?<span className="text-blue-900 ml-2">Sing Up</span></p>
-        </form>
+        }
+
+        <Modal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="Uwaga!!!"
+          message={textModal}
+        />
       </div>
-
-
     </div>
   );
 }
