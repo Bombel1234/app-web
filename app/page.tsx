@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { auth, provider } from "@/app/lib/firebase"
-import { signInWithPopup, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithPopup, sendSignInLinkToEmail, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import FormRegistration from "./components/registration/formRegistration";
 import FormLogIn from "./components/registration/formLogin";
@@ -115,7 +115,7 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push('/home')
-      
+
     } catch (err: any) {
 
       switch (err.code) {
@@ -137,8 +137,25 @@ export default function Login() {
 
   }
 
-  return (
+  // test/////////
+  const handleSendLink = async () => {
+    const actionCodeSettings = {
+      url: 'https://app-web-bice.vercel.app/finish-signup',
+      handleCodeInApp: true,
+    };
     
+    try {
+      await sendSignInLinkToEmail(auth, 'mypython1978@gmail.com', actionCodeSettings);
+    
+      window.localStorage.setItem('emailForSignIn', 'mypython1978@gmail.com');
+      alert('Ссылка для входа отправлена на почту!');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+
     <div className=" bg-black min-h-screen ">
       <div className="w-[98vw] bg-black-800 m-auto py-4 px-2">
         <h1 className="text-[38px] text-center text-white font-bold mb-10">Witaj!!!</h1>
@@ -155,6 +172,14 @@ export default function Login() {
           />
           Wejscie przez Google
         </button>
+        <button
+          onClick={handleSendLink}
+          className=" flex justify-center text-[18px] font-bold gap-4 items-center w-full px-6 py-2 mb-4  bg-blue-100 rounded-lg hover:bg-blue-300 transition"
+        >
+          Click send email
+        </button>
+        
+        
         <div className="text-white">{error}</div>
         {isFormLogo ? (
           <div className="">
@@ -174,7 +199,7 @@ export default function Login() {
           <div className="">
             <h2 className="text-2xl text-white text-center font-bold mt-10 mb-12">Logowanie przez email</h2>
 
-            <FormLogIn 
+            <FormLogIn
               action={handleLogo}
             />
             <p className="text-white text-[18px] font-bold">Don't have an account?
